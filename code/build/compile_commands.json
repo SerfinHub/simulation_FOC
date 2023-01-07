@@ -1,0 +1,37 @@
+[
+{
+  "directory": "C:/Users/bachm/Documents/Plexim/FOC/1 Close-loop/code/build",
+  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\X86_64~2.EXE -DPLECS_EXPORTS  -g -o CMakeFiles\\PLECS.dir\\main.cpp.obj -c \"C:\\Users\\bachm\\Documents\\Plexim\\FOC\\1 Close-loop\\code\\main.cpp\"",
+  "file": "C:/Users/bachm/Documents/Plexim/FOC/1 Close-loop/code/main.cpp"
+},
+{
+  "directory": "C:/Users/bachm/Documents/Plexim/FOC/1 Close-loop/code/build/components",
+  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\X86_64~2.EXE   -g -o CMakeFiles\\FuncComp.dir\\Controllers.cpp.obj -c \"C:\\Users\\bachm\\Documents\\Plexim\\FOC\\1 Close-loop\\code\\components\\Controllers.cpp\"",
+  "file": "C:/Users/bachm/Documents/Plexim/FOC/1 Close-loop/code/components/Controllers.cpp"
+},
+{
+  "directory": "C:/Users/bachm/Documents/Plexim/FOC/1 Close-loop/code/build/components",
+  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\X86_64~2.EXE   -g -o CMakeFiles\\FuncComp.dir\\SVM.cpp.obj -c \"C:\\Users\\bachm\\Documents\\Plexim\\FOC\\1 Close-loop\\code\\components\\SVM.cpp\"",
+  "file": "C:/Users/bachm/Documents/Plexim/FOC/1 Close-loop/code/components/SVM.cpp"
+},
+{
+  "directory": "C:/Users/bachm/Documents/Plexim/FOC/1 Close-loop/code/build/components",
+  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\X86_64~2.EXE   -g -o CMakeFiles\\FuncComp.dir\\FOC.cpp.obj -c \"C:\\Users\\bachm\\Documents\\Plexim\\FOC\\1 Close-loop\\code\\components\\FOC.cpp\"",
+  "file": "C:/Users/bachm/Documents/Plexim/FOC/1 Close-loop/code/components/FOC.cpp"
+},
+{
+  "directory": "C:/Users/bachm/Documents/Plexim/FOC/1 Close-loop/code/build/ports",
+  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\X86_64~2.EXE   -g -o CMakeFiles\\FuncPorts.dir\\dllmain.cpp.obj -c \"C:\\Users\\bachm\\Documents\\Plexim\\FOC\\1 Close-loop\\code\\ports\\dllmain.cpp\"",
+  "file": "C:/Users/bachm/Documents/Plexim/FOC/1 Close-loop/code/ports/dllmain.cpp"
+},
+{
+  "directory": "C:/Users/bachm/Documents/Plexim/FOC/1 Close-loop/code/build/global",
+  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\X86_64~2.EXE   -g -o CMakeFiles\\FuncGlobal.dir\\type.cpp.obj -c \"C:\\Users\\bachm\\Documents\\Plexim\\FOC\\1 Close-loop\\code\\global\\type.cpp\"",
+  "file": "C:/Users/bachm/Documents/Plexim/FOC/1 Close-loop/code/global/type.cpp"
+},
+{
+  "directory": "C:/Users/bachm/Documents/Plexim/FOC/1 Close-loop/code/build/global",
+  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\X86_64~2.EXE   -g -o CMakeFiles\\FuncGlobal.dir\\filter.cpp.obj -c \"C:\\Users\\bachm\\Documents\\Plexim\\FOC\\1 Close-loop\\code\\global\\filter.cpp\"",
+  "file": "C:/Users/bachm/Documents/Plexim/FOC/1 Close-loop/code/global/filter.cpp"
+}
+]

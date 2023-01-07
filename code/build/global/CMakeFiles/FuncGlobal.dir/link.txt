@@ -1,0 +1,2 @@
+C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\ar.exe qc libFuncGlobal.a CMakeFiles/FuncGlobal.dir/type.cpp.obj CMakeFiles/FuncGlobal.dir/filter.cpp.obj
+C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\ranlib.exe libFuncGlobal.a
