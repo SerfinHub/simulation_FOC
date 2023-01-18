@@ -1,3 +1,0 @@
-"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\PLECS.dir/objects.a
-C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\ar.exe qc CMakeFiles\PLECS.dir/objects.a @CMakeFiles\PLECS.dir\objects1.rsp
-C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\X86_64~2.EXE -g -shared -o libPLECS.dll -Wl,--out-implib,libPLECS.dll.a -Wl,--major-image-version,0,--minor-image-version,0 -Wl,--whole-archive CMakeFiles\PLECS.dir/objects.a -Wl,--no-whole-archive @CMakeFiles\PLECS.dir\linklibs.rsp
