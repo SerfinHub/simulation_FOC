@@ -17,6 +17,9 @@ stateMachine::stateMachine() : counter_ss(0.0f),
 {
 }
 
+static ref_frame_t Iabc;
+static ref_frame_t Iab;
+
 void operator++(FOC_enum &val, int)
 {
 	switch (val)
@@ -104,37 +107,48 @@ void stateMachine::handle_sActive(FOC_t &FOC)
 	}
 
 	/* Theta recalculation*/
-	// Meas.theta w radianach
+	FOC.FrameAngle = Meas.theta;
 
-	// // Angle for dq->alfa/beta transformation for current estimation
-	// fi = fi + DT * pole_pairs * Meas.Speed_rad;
-	// if (fi > (2 * PI))
-	// 	fi = fi - (2 * PI);
-	// if (fi < 0)
-	// 	fi = fi + (2 * PI);
+	/* Position control loop */
+	Meas.position += 10.1f * Meas.speed * Param.Ts;
+
+	inP.error = Set.position_ref - Meas.position;
+	piP.out = piP.Calculate(inP);
+
+	/* Speed control loop */
+	// inS.error = Set.speed_ref - Meas.speed;
+	inS.error = piP.out - Meas.speed;
+	piS.out = piS.Calculate(inS);
 
 	/* Current -> dq */
 	Iabc.a = Meas_filter.I_m1;
 	Iabc.b = Meas_filter.I_m2;
 	Iabc.c = Meas_filter.I_m3;
+
 	Iab = TransMatrix.abc_ab(Iabc);
-	Idq = TransMatrix.ab_dq(Iab, FOC.angle);
+	Idq = TransMatrix.ab_dq(Iab, FOC.FrameAngle);
 
-	/* Iq pi */
-	inIq.error = 0.0f - I_q;
-	Idq.q = piIq.Calculate(inId);
+	/* Iq pi torque */
+	// ramp.Iramp += Param.Ts * 400.0f * (Set.current_ref - ramp.Iold);
+	// ramp.Iold = ramp.Iramp;
+	inIq.error = piS.out - Idq.q;
+	Vdq.q = piIq.Calculate(inIq);
 
-	/* Id pi */
-	ramp.Iramp += Param.Ts * 400.0f * (Set.current_ref - ramp.Iold);
-	ramp.Iold = ramp.Iramp;
-	inId.error = ramp.Iramp - I_d;
-	Idq.d = piId.Calculate(inId);
+	/* Id pi flux*/
+	inId.error = 0.0f - Idq.d;
+	Vdq.d = piId.Calculate(inId);
 
 	/* Vdq -> Vab*/
-	Iab = TransMatrix.dq_ab(Idq, FOC.angle);
+	Vab = TransMatrix.dq_ab(Vdq, FOC.FrameAngle);
+
+	/* Stator angle calculation */
+	FOC.theta = atan2(Vab.beta, Vab.alfa);
+	if (FOC.theta < 0.0f)
+		FOC.theta += (2.0f * MATH_PI);
 
 	/* Modulator */
-	SVM.iteration();
+	Mindex = SVM.calc_modulation_index(Vab.alfa, Vab.beta);
+	SVM.iteration(FOC.theta);
 
-	Oscilloscope(Set.current_ref, Meas_filter.I_m1, inId.error, Idq.d);
+	Oscilloscope(Set.position_ref, Meas.position, inP.error, piP.out);
 }

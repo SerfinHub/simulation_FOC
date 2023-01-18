@@ -47,11 +47,12 @@ void measRead(struct SimulationState *aState)
 	Meas.I_m2 = (float)aState->inputs[2];
 	Meas.I_m3 = (float)aState->inputs[3];
 	Meas.theta = (float)aState->inputs[4];
+	Meas.speed = (float)aState->inputs[5];
 
-	Set.current_ref = (float)aState->inputs[5];
-	Set.torque_ref = (float)aState->inputs[6];
-	Set.speed_ref = (float)aState->inputs[7];
-	Set.position_ref = (float)aState->inputs[8];
+	Set.current_ref = (float)aState->inputs[6];
+	Set.torque_ref = (float)aState->inputs[7];
+	Set.speed_ref = (float)aState->inputs[8];
+	Set.position_ref = (float)aState->inputs[9];
 
 	U_dc1_IIR.xn0 = Meas.U_dc1;
 	I_m1_IIR.xn0 = Meas.I_m1;

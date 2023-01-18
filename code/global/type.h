@@ -13,7 +13,7 @@
 #include "../ports/dllheader.h"
 
 /* IO DEFINES */
-#define DLL_INPUTS_NUMBER 9
+#define DLL_INPUTS_NUMBER 10
 #define DLL_OUTPUTS_NUMBER 10
 #define DLL_PARAMETERS_NUMBER 2
 
@@ -37,6 +37,8 @@ struct Measurements_t
     float I_m2;
     float I_m3;
     float theta;
+    float speed;
+    float position;
 };
 
 struct Settings_t

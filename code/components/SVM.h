@@ -42,21 +42,21 @@ public:
     SVM_enum Mstate;
     SVM_machine();
 
-    void iteration();
+    void iteration(float theta);
+    float calc_modulation_index(float alfa, float beta);
 
 private:
     SVM_enum Mstate_last;
     SVM_t SVM;
 
-    void calc_modulation_index();
-    void select_state();
+    void select_state(float theta);
 
-    void handle_100();
-    void handle_110();
-    void handle_010();
-    void handle_011();
-    void handle_001();
-    void handle_101();
+    void handle_100(float theta);
+    void handle_110(float theta);
+    void handle_010(float theta);
+    void handle_011(float theta);
+    void handle_001(float theta);
+    void handle_101(float theta);
 
     void set_outputs(float dutyA, float dutyB, float dutyC, float deadtime);
 };

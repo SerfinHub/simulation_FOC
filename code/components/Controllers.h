@@ -41,6 +41,7 @@ public:
     ref_frame_t dq_ab(ref_frame_t &in, float &angle);
 
     int mode;
+    float out;
 
 private:
     float Kp;

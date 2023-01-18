@@ -18,32 +18,33 @@ enum FOC_enum
 };
 struct Reg_settings_t
 {
-	float sKp = 1.0f;
+	float pKp = 10.00f;
+	float pTi = 0.001f;
+	float pLh = 600.0f;
+	float pLl = -600.0f;
+
+	float sKp = 1.10f;
 	float sTi = 0.01f;
-	float sLh = 60.0f;
-	float sLl = -60.0f;
+	float sLh = 300.0f;
+	float sLl = -300.0f;
 
-	float idKp = 4.0f;
-	float idTi = 0.002f;
-	float idLh = 60.0f;
-	float idLl = -60.0f;
+	float idKp = 0.100f;
+	float idTi = 0.00011f;
+	float idLh = 300.0f;
+	float idLl = -300.0f;
 
-	float iqKp = 4.0f;
-	float iqTi = 0.002f;
-	float iqLh = 60.0f;
-	float iqLl = -60.0f;
-
-	float pKp = 0.0050f;
-	float pTi = 0.2f;
-	float pLh = 60.0f;
-	float pLl = -60.0f;
+	float iqKp = 25.000f;
+	float iqTi = 0.00011f;
+	float iqLh = 300.0f;
+	float iqLl = -300.0f;
 };
 
 struct FOC_t
 {
 	float duty;
 	float deadtime;
-	float angle;
+	float FrameAngle;
+	float theta;
 };
 
 struct RAMP_t
@@ -76,14 +77,16 @@ private:
 
 	MyReg TransMatrix;
 
-	ref_frame_t Iabc;
-	ref_frame_t Iab;
 	ref_frame_t Idq;
+	ref_frame_t Vab;
+	ref_frame_t Vdq;
 
 	SVM_machine SVM;
 
 	float I_d;
 	float I_q;
+
+	float Mindex;
 
 	friend void operator++(FOC_enum &val, int);
 

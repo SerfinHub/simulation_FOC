@@ -1000,308 +1000,6 @@ Plecs {
       }
     }
     Component {
-      Type          Subsystem
-      Name          "Current shape"
-      Show          on
-      Position      [800, 550]
-      Direction     up
-      Flipped       off
-      Frame         [-20, -20; 20, 20]
-      LabelPosition [0, 23]
-      LabelAlign    up
-      SampleTime    "-1"
-      CodeGenDiscretizationMethod "2"
-      CodeGenTarget "Generic"
-      MaskIconFrame on
-      MaskIconOpaque off
-      MaskIconRotates on
-      Parameter {
-        Variable      "beta"
-        Prompt        "Gap width"
-        Type          FreeText
-        Value         "pi/3"
-        Show          off
-        Tunable       off
-        TabName       ""
-      }
-      Terminal {
-        Type          Input
-        Position      [-20, 0]
-        Direction     left
-      }
-      Terminal {
-        Type          Output
-        Position      [24, 0]
-        Direction     right
-      }
-      Schematic {
-        Location      [476, 224; 1028, 411]
-        ZoomFactor    1
-        SliderPosition [0, 0]
-        ShowBrowser   off
-        BrowserWidth  100
-        Component {
-          Type          Constant
-          Name          "Constant"
-          Show          off
-          Position      [75, 90]
-          Direction     right
-          Flipped       off
-          Frame         [-60, -10; 60, 10]
-          LabelPosition [0, 13]
-          LabelAlign    up
-          Parameter {
-            Variable      "Value"
-            Value         "[0 120 240]/180*pi"
-            Show          off
-          }
-          Parameter {
-            Variable      "DataType"
-            Value         "10"
-            Show          off
-          }
-        }
-        Component {
-          Type          Input
-          Name          "theta"
-          Show          on
-          Position      [75, 45]
-          Direction     right
-          Flipped       off
-          Parameter {
-            Variable      "Index"
-            Value         "1"
-            Show          on
-          }
-          Parameter {
-            Variable      "Width"
-            Value         "-1"
-            Show          off
-          }
-        }
-        Component {
-          Type          Sum
-          Name          "Sum"
-          Show          on
-          Position      [180, 50]
-          Direction     up
-          Flipped       off
-          Parameter {
-            Variable      "IconShape"
-            Value         "1"
-            Show          off
-          }
-          Parameter {
-            Variable      "Inputs"
-            Value         "+-"
-            Show          off
-          }
-          Parameter {
-            Variable      "DataType"
-            Value         "11"
-            Show          off
-          }
-        }
-        Component {
-          Type          Trigonometry
-          Name          "Trigonometric\nFunction"
-          Show          off
-          Position      [255, 50]
-          Direction     right
-          Flipped       off
-          Parameter {
-            Variable      "Operator"
-            Value         "1"
-            Show          off
-          }
-          Parameter {
-            Variable      "Unit"
-            Value         "1"
-            Show          off
-          }
-        }
-        Component {
-          Type          Signum
-          Name          "Sign"
-          Show          on
-          Position      [405, 50]
-          Direction     right
-          Flipped       off
-        }
-        Component {
-          Type          Output
-          Name          "K"
-          Show          on
-          Position      [475, 50]
-          Direction     right
-          Flipped       off
-          Parameter {
-            Variable      "Index"
-            Value         "2"
-            Show          on
-          }
-          Parameter {
-            Variable      "Width"
-            Value         "-1"
-            Show          off
-          }
-        }
-        Component {
-          Type          Reference
-          SrcComponent  "Components/Control/Discontinuous/Dead Zone"
-          Name          "Dead Zone"
-          Show          on
-          Position      [335, 50]
-          Direction     up
-          Flipped       off
-          Frame         [-15, -15; 15, 15]
-          LabelPosition [0, 18]
-          LabelAlign    up
-          Parameter {
-            Variable      "lower"
-            Value         "-sin(beta/2)"
-            Show          off
-          }
-          Parameter {
-            Variable      "upper"
-            Value         "sin(beta/2)"
-            Show          off
-          }
-          Terminal {
-            Type          Input
-            Position      [-15, 0]
-            Direction     left
-          }
-          Terminal {
-            Type          Output
-            Position      [19, 0]
-            Direction     right
-          }
-        }
-        Connection {
-          Type          Signal
-          SrcComponent  "Constant"
-          SrcTerminal   1
-          Points        [145, 90; 145, 55]
-          DstComponent  "Sum"
-          DstTerminal   3
-        }
-        Connection {
-          Type          Signal
-          SrcComponent  "Sum"
-          SrcTerminal   1
-          DstComponent  "Trigonometric\nFunction"
-          DstTerminal   1
-        }
-        Connection {
-          Type          Signal
-          SrcComponent  "Sign"
-          SrcTerminal   2
-          DstComponent  "K"
-          DstTerminal   1
-        }
-        Connection {
-          Type          Signal
-          SrcComponent  "theta"
-          SrcTerminal   1
-          DstComponent  "Sum"
-          DstTerminal   2
-        }
-        Connection {
-          Type          Signal
-          SrcComponent  "Trigonometric\nFunction"
-          SrcTerminal   2
-          DstComponent  "Dead Zone"
-          DstTerminal   1
-        }
-        Connection {
-          Type          Signal
-          SrcComponent  "Dead Zone"
-          SrcTerminal   2
-          DstComponent  "Sign"
-          DstTerminal   1
-        }
-      }
-    }
-    Component {
-      Type          From
-      Name          "From12"
-      Show          off
-      Position      [760, 550]
-      Direction     right
-      Flipped       off
-      Parameter {
-        Variable      "Tag"
-        Value         "theta"
-        Show          off
-      }
-      Parameter {
-        Variable      "Visibility"
-        Value         "1"
-        Show          off
-      }
-    }
-    Component {
-      Type          Scope
-      Name          "Scope1"
-      Show          on
-      Position      [860, 550]
-      Direction     up
-      Flipped       off
-      Location      [0, 26; 1536, 807]
-      State         "AAAA/wAAAAD9AAAAAgAAAAEAAAAAAAAAAPwCAAAAA/sAAAAQAFoAbwBvA"
-"G0AQQByAGUAYQAAAAAA/////wAAAD8A////+wAAABQAUwBhAHYAZQBkAFYAaQBlAHcAcwAAAAAA//"
-"///wAAAH4A////+wAAAAwAVAByAGEAYwBlAHMAAAAAAP////8AAAB+AP///wAAAAMAAAAAAAAAAPw"
-"BAAAAAfsAAAAUAEQAYQB0AGEAVwBpAGQAZwBlAHQAAAAAAP////8AAABfAP///wAAB4AAAAOxAAAA"
-"BAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAOAFQAbwBvAGwAQgBhAHIBAAAAAP////8AAAAAA"
-"AAAAA=="
-      SavedViews    "AAAAAgAAAAA="
-      HeaderState   "AAAA/wAAAAAAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAL/gMAAAAJAAAAC"
-"AAAAH0AAAAJAAAAfQAAAAIAAAB9AAAAAwAAAH0AAAABAAAAfQAAAAYAAAB9AAAABwAAAH0AAAAEAA"
-"AAfQAAAAUAAAB9AAAA0QAAAAsBAAABAAAAAAAAAAAAAAAAff////8AAACBAAAAAAAAAAsAAACmAAA"
-"AAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAA"
-"AAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAA"
-"AArAAAAAQAAAAAAAAPoAAAAACs="
-      PlotPalettes  "AAAAAQAAAAEAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-      Axes          "1"
-      TimeRange     "0.0"
-      ScrollingMode "1"
-      SingleTimeAxis "1"
-      Open          "0"
-      Ts            "-1"
-      SampleLimit   "0"
-      XAxisLabel    ""
-      ShowLegend    "1"
-      Axis {
-        Name          ""
-        AutoScale     1
-        MinValue      0
-        MaxValue      1
-        Signals       {}
-        SignalTypes   [ ]
-        Untangle      1
-        KeepBaseline  off
-        BaselineValue 0
-      }
-      Fourier {
-        SingleXAxis       on
-        AxisLabel         "Frequency"
-        Scaling           0
-        PhaseDisplay      0
-        ShowFourierLegend off
-        Axis {
-          Name          ""
-          AutoScale     1
-          MinValue      0
-          MaxValue      1
-          Signals       {}
-          Untangle      0
-          KeepBaseline  off
-          BaselineValue 0
-        }
-      }
-    }
-    Component {
       Type          SignalMux
       Name          "Mux5"
       Show          off
@@ -1402,7 +1100,7 @@ Plecs {
       LabelAlign    up
       Parameter {
         Variable      "Value"
-        Value         "0"
+        Value         "1000"
         Show          off
       }
       Parameter {
@@ -1778,7 +1476,7 @@ Plecs {
       Type          Scope
       Name          "Scope4"
       Show          on
-      Position      [860, 605]
+      Position      [790, 600]
       Direction     up
       Flipped       off
       Location      [0, 26; 1536, 807]
@@ -1801,7 +1499,7 @@ Plecs {
       TimeRange     "0"
       ScrollingMode "1"
       SingleTimeAxis "1"
-      Open          "1"
+      Open          "0"
       Ts            "-1"
       SampleLimit   "0"
       XAxisLabel    ""
@@ -1860,7 +1558,7 @@ Plecs {
       Type          From
       Name          "From20"
       Show          off
-      Position      [815, 600]
+      Position      [745, 595]
       Direction     right
       Flipped       off
       Parameter {
@@ -1878,7 +1576,7 @@ Plecs {
       Type          From
       Name          "From21"
       Show          off
-      Position      [815, 610]
+      Position      [745, 605]
       Direction     right
       Flipped       off
       Parameter {
@@ -1976,7 +1674,7 @@ Plecs {
       Type          Scope
       Name          "Scope7"
       Show          on
-      Position      [860, 480]
+      Position      [790, 545]
       Direction     up
       Flipped       off
       Location      [769, 30; 1535, 803]
@@ -2058,7 +1756,7 @@ Plecs {
       Type          From
       Name          "From22"
       Show          off
-      Position      [800, 475]
+      Position      [730, 540]
       Direction     right
       Flipped       off
       Parameter {
@@ -2076,7 +1774,7 @@ Plecs {
       Type          SignalMux
       Name          "Mux7"
       Show          off
-      Position      [820, 500]
+      Position      [750, 565]
       Direction     right
       Flipped       off
       Parameter {
@@ -2089,7 +1787,7 @@ Plecs {
       Type          From
       Name          "From7"
       Show          off
-      Position      [800, 490]
+      Position      [730, 555]
       Direction     right
       Flipped       off
       Parameter {
@@ -2107,7 +1805,7 @@ Plecs {
       Type          From
       Name          "From23"
       Show          off
-      Position      [800, 500]
+      Position      [730, 565]
       Direction     right
       Flipped       off
       Parameter {
@@ -2125,7 +1823,7 @@ Plecs {
       Type          From
       Name          "From24"
       Show          off
-      Position      [800, 510]
+      Position      [730, 575]
       Direction     right
       Flipped       off
       Parameter {
@@ -2143,7 +1841,7 @@ Plecs {
       Type          Scope
       Name          "Scope5"
       Show          on
-      Position      [660, 590]
+      Position      [655, 590]
       Direction     up
       Flipped       off
       Location      [0, 26; 1536, 807]
@@ -2167,7 +1865,7 @@ Plecs {
       TimeRange     "0"
       ScrollingMode "1"
       SingleTimeAxis "1"
-      Open          "0"
+      Open          "1"
       Ts            "-1"
       SampleLimit   "0"
       XAxisLabel    ""
@@ -2268,7 +1966,7 @@ Plecs {
       Type          Scope
       Name          "Scope6"
       Show          on
-      Position      [860, 430]
+      Position      [790, 495]
       Direction     up
       Flipped       off
       Location      [0, 26; 1536, 807]
@@ -2549,176 +2247,10 @@ Plecs {
       }
     }
     Component {
-      Type          TriangleGenerator
-      Name          "Triangular Wave1"
-      Show          on
-      Position      [760, 380]
-      Direction     right
-      Flipped       off
-      Parameter {
-        Variable      "Min"
-        Value         "-3.14"
-        Show          off
-      }
-      Parameter {
-        Variable      "Max"
-        Value         "3.14"
-        Show          off
-      }
-      Parameter {
-        Variable      "f"
-        Value         "50"
-        Show          off
-      }
-      Parameter {
-        Variable      "DutyCycle"
-        Value         "1"
-        Show          off
-      }
-      Parameter {
-        Variable      "Delay"
-        Value         "0"
-        Show          off
-      }
-    }
-    Component {
-      Type          Scope
-      Name          "Scope10"
-      Show          on
-      Position      [860, 370]
-      Direction     up
-      Flipped       off
-      Location      [0, 26; 1536, 807]
-      State         "AAAA/wAAAAD9AAAAAgAAAAEAAAAAAAAAAPwCAAAAA/sAAAAQAFoAbwBvA"
-"G0AQQByAGUAYQAAAAAA/////wAAAD8A////+wAAABQAUwBhAHYAZQBkAFYAaQBlAHcAcwAAAAAA//"
-"///wAAAH4A////+wAAAAwAVAByAGEAYwBlAHMAAAAAAP////8AAAB+AP///wAAAAMAAAeAAAAAffw"
-"BAAAAAfsAAAAUAEQAYQB0AGEAVwBpAGQAZwBlAHQBAAAAAAAAB4AAAABfAP///wAAB4AAAAMvAAAA"
-"BAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAOAFQAbwBvAGwAQgBhAHIBAAAAAP////8AAAAAA"
-"AAAAA=="
-      SavedViews    "AAAAAgAAAAA="
-      HeaderState   "AAAA/wAAAAAAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAL/gMAAAAJAAAAC"
-"AAAAH0AAAAJAAAAfQAAAAIAAAB9AAAAAwAAAH0AAAABAAAAfQAAAAYAAAB9AAAABwAAAH0AAAAEAA"
-"AAfQAAAAUAAAB9AAAHgAAAAAsBAAABAAAAAAAAAAAAAAAAff////8AAACBAAAAAAAAAAsAAACzAAA"
-"AAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAA"
-"AAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAA"
-"AbNAAAAAQAAAAAAAAPoAAAAACs="
-      PlotPalettes  "AAAAAQAAAAEAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-      Axes          "1"
-      TimeRange     "0.0"
-      ScrollingMode "1"
-      SingleTimeAxis "1"
-      Open          "0"
-      Ts            "-1"
-      SampleLimit   "0"
-      XAxisLabel    ""
-      ShowLegend    "1"
-      Axis {
-        Name          ""
-        AutoScale     1
-        MinValue      0
-        MaxValue      1
-        Signals       {}
-        SignalTypes   [ ]
-        Untangle      1
-        KeepBaseline  off
-        BaselineValue 0
-      }
-      Fourier {
-        SingleXAxis       on
-        AxisLabel         "Frequency"
-        Scaling           0
-        PhaseDisplay      0
-        ShowFourierLegend off
-        Axis {
-          Name          ""
-          AutoScale     1
-          MinValue      0
-          MaxValue      1
-          Signals       {}
-          Untangle      0
-          KeepBaseline  off
-          BaselineValue 0
-        }
-      }
-    }
-    Component {
-      Type          Scope
-      Name          "Scope11"
-      Show          on
-      Position      [700, 535]
-      Direction     up
-      Flipped       off
-      Location      [1, 30; 767, 803]
-      State         "AAAA/wAAAAD9AAAAAgAAAAEAAAAAAAAAAPwCAAAAA/sAAAAQAFoAbwBvA"
-"G0AQQByAGUAYQAAAAAA/////wAAAD8A////+wAAABQAUwBhAHYAZQBkAFYAaQBlAHcAcwAAAAAA//"
-"///wAAAH4A////+wAAAAwAVAByAGEAYwBlAHMAAAAAAP////8AAAB+AP///wAAAAMAAAAAAAAAAPw"
-"BAAAAAfsAAAAUAEQAYQB0AGEAVwBpAGQAZwBlAHQAAAAAAP////8AAABfAP///wAAA74AAAOnAAAA"
-"BAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAOAFQAbwBvAGwAQgBhAHIBAAAAAP////8AAAAAA"
-"AAAAA=="
-      SavedViews    "AAAAAgAAAAA="
-      HeaderState   "AAAA/wAAAAAAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAL/gMAAAAJAAAAC"
-"AAAAH0AAAAJAAAAfQAAAAIAAAB9AAAAAwAAAH0AAAABAAAAfQAAAAYAAAB9AAAABwAAAH0AAAAEAA"
-"AAfQAAAAUAAAB9AAABVQAAAAsBAAABAAAAAAAAAAAAAAAAff////8AAACBAAAAAAAAAAsAAAEqAAA"
-"AAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAA"
-"AAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAA"
-"AArAAAAAQAAAAAAAAPoAAAAACs="
-      PlotPalettes  "AAAAAQAAAAEAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-      Axes          "1"
-      TimeRange     "0.0"
-      ScrollingMode "1"
-      SingleTimeAxis "1"
-      Open          "0"
-      Ts            "-1"
-      SampleLimit   "0"
-      XAxisLabel    ""
-      ShowLegend    "1"
-      Axis {
-        Name          ""
-        AutoScale     1
-        MinValue      0
-        MaxValue      1
-        Signals       {}
-        SignalTypes   [ ]
-        Untangle      0
-        KeepBaseline  off
-        BaselineValue 0
-      }
-      Fourier {
-        SingleXAxis       on
-        AxisLabel         "Frequency"
-        Scaling           0
-        PhaseDisplay      0
-        ShowFourierLegend off
-        Axis {
-          Name          ""
-          AutoScale     1
-          MinValue      0
-          MaxValue      1
-          Signals       {}
-          Untangle      0
-          KeepBaseline  off
-          BaselineValue 0
-        }
-      }
-    }
-    Component {
-      Type          SignalMux
-      Name          "Mux9"
-      Show          off
-      Position      [665, 535]
-      Direction     right
-      Flipped       off
-      Parameter {
-        Variable      "Width"
-        Value         "2"
-        Show          off
-      }
-    }
-    Component {
       Type          From
       Name          "From25"
       Show          off
-      Position      [800, 435]
+      Position      [730, 500]
       Direction     left
       Flipped       on
       Parameter {
@@ -2736,7 +2268,7 @@ Plecs {
       Type          From
       Name          "From26"
       Show          off
-      Position      [800, 425]
+      Position      [730, 490]
       Direction     right
       Flipped       off
       Parameter {
@@ -2884,79 +2416,6 @@ Plecs {
       Parameter {
         Variable      "theta0"
         Value         "0"
-        Show          off
-      }
-    }
-    Component {
-      Type          Scope
-      Name          "Scope12"
-      Show          on
-      Position      [865, 315]
-      Direction     up
-      Flipped       off
-      Location      [0, 26; 1536, 807]
-      State         "AAAA/wAAAAD9AAAAAgAAAAEAAAAAAAAAAPwCAAAAA/sAAAAQAFoAbwBvA"
-"G0AQQByAGUAYQAAAAAA/////wAAAD8A////+wAAABQAUwBhAHYAZQBkAFYAaQBlAHcAcwAAAAAA//"
-"///wAAAH4A////+wAAAAwAVAByAGEAYwBlAHMAAAAAAP////8AAAB+AP///wAAAAMAAAeAAAAAffw"
-"BAAAAAfsAAAAUAEQAYQB0AGEAVwBpAGQAZwBlAHQBAAAAAAAAB4AAAABfAP///wAAB4AAAAMvAAAA"
-"BAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAOAFQAbwBvAGwAQgBhAHIBAAAAAP////8AAAAAA"
-"AAAAA=="
-      SavedViews    "AAAAAgAAAAA="
-      HeaderState   "AAAA/wAAAAAAAAABAAAAAQAAAAAAAAAAAAAAAAAAAAAL/gMAAAAJAAAAC"
-"AAAAH0AAAAJAAAAfQAAAAIAAAB9AAAAAwAAAH0AAAABAAAAfQAAAAYAAAB9AAAABwAAAH0AAAAEAA"
-"AAfQAAAAUAAAB9AAAHawAAAAsBAAABAAAAAAAAAAAAAAAAff////8AAACBAAAAAAAAAAsAAACuAAA"
-"AAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAA"
-"AAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAA"
-"Aa9AAAAAQAAAAAAAAPoAAAAACs="
-      PlotPalettes  "AAAAAQAAAAEAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-      Axes          "1"
-      TimeRange     "0.0"
-      ScrollingMode "1"
-      SingleTimeAxis "1"
-      Open          "0"
-      Ts            "-1"
-      SampleLimit   "0"
-      XAxisLabel    ""
-      ShowLegend    "1"
-      Axis {
-        Name          ""
-        AutoScale     1
-        MinValue      0
-        MaxValue      1
-        Signals       {}
-        SignalTypes   [ ]
-        Untangle      0
-        KeepBaseline  off
-        BaselineValue 0
-      }
-      Fourier {
-        SingleXAxis       on
-        AxisLabel         "Frequency"
-        Scaling           0
-        PhaseDisplay      0
-        ShowFourierLegend off
-        Axis {
-          Name          ""
-          AutoScale     1
-          MinValue      0
-          MaxValue      1
-          Signals       {}
-          Untangle      0
-          KeepBaseline  off
-          BaselineValue 0
-        }
-      }
-    }
-    Component {
-      Type          SignalMux
-      Name          "Mux10"
-      Show          off
-      Position      [825, 315]
-      Direction     right
-      Flipped       off
-      Parameter {
-        Variable      "Width"
-        Value         "3"
         Show          off
       }
     }
@@ -3742,20 +3201,6 @@ Plecs {
     }
     Connection {
       Type          Signal
-      SrcComponent  "From12"
-      SrcTerminal   1
-      DstComponent  "Current shape"
-      DstTerminal   1
-    }
-    Connection {
-      Type          Signal
-      SrcComponent  "Current shape"
-      SrcTerminal   2
-      DstComponent  "Scope1"
-      DstTerminal   1
-    }
-    Connection {
-      Type          Signal
       SrcComponent  "From2"
       SrcTerminal   1
       DstComponent  "Mux5"
@@ -4049,7 +3494,7 @@ Plecs {
       Type          Signal
       SrcComponent  "Mux7"
       SrcTerminal   1
-      Points        [830, 485]
+      Points        [760, 550]
       DstComponent  "Scope7"
       DstTerminal   2
     }
@@ -4217,34 +3662,6 @@ Plecs {
     }
     Connection {
       Type          Signal
-      SrcComponent  "Triangular Wave1"
-      SrcTerminal   1
-      Points        [785, 380]
-      Branch {
-        Points        [800, 380]
-      }
-      Branch {
-        Points        [785, 370; 795, 370]
-        Branch {
-          DstComponent  "Scope10"
-          DstTerminal   1
-        }
-        Branch {
-          Points        [795, 325]
-          DstComponent  "Mux10"
-          DstTerminal   4
-        }
-      }
-    }
-    Connection {
-      Type          Signal
-      SrcComponent  "Mux9"
-      SrcTerminal   1
-      DstComponent  "Scope11"
-      DstTerminal   1
-    }
-    Connection {
-      Type          Signal
       SrcComponent  "From17"
       SrcTerminal   1
       DstComponent  "Scope3"
@@ -4350,13 +3767,6 @@ Plecs {
       Points        [590, 230; 590, 195]
       DstComponent  "BLDC"
       DstTerminal   2
-    }
-    Connection {
-      Type          Signal
-      SrcComponent  "Mux10"
-      SrcTerminal   1
-      DstComponent  "Scope12"
-      DstTerminal   1
     }
     Connection {
       Type          Signal
@@ -4543,36 +3953,6 @@ Plecs {
     }
     Connection {
       Type          Signal
-      SrcComponent  "Demux5"
-      SrcTerminal   4
-      Points        [620, 595]
-      Branch {
-        DstComponent  "Scope5"
-        DstTerminal   3
-      }
-      Branch {
-        Points        [620, 530]
-        DstComponent  "Mux9"
-        DstTerminal   2
-      }
-    }
-    Connection {
-      Type          Signal
-      SrcComponent  "Demux5"
-      SrcTerminal   5
-      Points        [630, 605]
-      Branch {
-        DstComponent  "Scope5"
-        DstTerminal   4
-      }
-      Branch {
-        Points        [630, 540]
-        DstComponent  "Mux9"
-        DstTerminal   3
-      }
-    }
-    Connection {
-      Type          Signal
       SrcComponent  "Am3"
       SrcTerminal   3
       DstComponent  "Goto7"
@@ -4629,6 +4009,20 @@ Plecs {
       Points        [185, 590]
       DstComponent  "Mux3"
       DstTerminal   7
+    }
+    Connection {
+      Type          Signal
+      SrcComponent  "Demux5"
+      SrcTerminal   4
+      DstComponent  "Scope5"
+      DstTerminal   3
+    }
+    Connection {
+      Type          Signal
+      SrcComponent  "Demux5"
+      SrcTerminal   5
+      DstComponent  "Scope5"
+      DstTerminal   4
     }
   }
   Analysis {

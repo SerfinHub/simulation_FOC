@@ -87,8 +87,8 @@ float MyReg::selectController(float power, float voltage, float current)
 ref_frame_t MyReg::abc_ab(ref_frame_t &in)
 {
     ref_frame_t out;
-    out.alfa = (2.0f * in.a - in.b - in.c) * MATH_PI_3;
-    out.beta = (in.b - in.c) * MATH_1_SQRT3;
+    out.alfa = in.a;
+    out.beta = (1.0f / sqrt(3.0f)) * (2.0f * in.b + in.a);
     return out;
 }
 
