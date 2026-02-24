@@ -13,24 +13,24 @@
 #define myMATH_SQRT3 1.7320508075688772935274463415059
 #define myMATH_SQRT2 1.4142135623730950488016887242097
 
-const double MATH_PI = myMATH_PI;
-const double MATH_2PI = myMATH_PI * 2.0;
-const double MATH_2PI_3 = myMATH_PI * 2.0 / 3.0;
-const double MATH_4PI_3 = myMATH_PI * 4.0 / 3.0;
-const double MATH_5PI_3 = myMATH_PI * 5.0 / 3.0;
-const double MATH_PI_3 = myMATH_PI / 3.0;
-const double MATH_1_2PI = 1.0 / (myMATH_PI * 2.0);
-const double MATH_1_PI = 1.0 / myMATH_PI;
-const double MATH_1_3 = 1.0 / 3.0;
-const double MATH_1_SQRT3 = 1.0 / myMATH_SQRT3;
-const double MATH_1_SQRT2 = 1.0 / myMATH_SQRT2;
-const double MATH_SQRT2_3 = myMATH_SQRT2 / 3.0;
-const double MATH_SQRT3_2 = myMATH_SQRT3 / 2.0;
-const double MATH_SQRT2 = myMATH_SQRT2;
-const double MATH_SQRT3 = myMATH_SQRT3;
-const double MATH_2_3 = 2.0 / 3.0;
-const double MATH_1_325 = 1.0 / 325.0;
-const double MATH_N2_325 = -2.0 / 325.0;
+constexpr float MATH_PI = myMATH_PI;
+constexpr float MATH_2PI = myMATH_PI * 2.0;
+constexpr float MATH_2PI_3 = myMATH_PI * 2.0 / 3.0;
+constexpr float MATH_4PI_3 = myMATH_PI * 4.0 / 3.0;
+constexpr float MATH_5PI_3 = myMATH_PI * 5.0 / 3.0;
+constexpr float MATH_PI_3 = myMATH_PI / 3.0;
+constexpr float MATH_1_2PI = 1.0 / (myMATH_PI * 2.0);
+constexpr float MATH_1_PI = 1.0 / myMATH_PI;
+constexpr float MATH_1_3 = 1.0 / 3.0;
+constexpr float MATH_1_SQRT3 = 1.0 / myMATH_SQRT3;
+constexpr float MATH_1_SQRT2 = 1.0 / myMATH_SQRT2;
+constexpr float MATH_SQRT2_3 = myMATH_SQRT2 / 3.0;
+constexpr float MATH_SQRT3_2 = myMATH_SQRT3 / 2.0;
+constexpr float MATH_SQRT2 = myMATH_SQRT2;
+constexpr float MATH_SQRT3 = myMATH_SQRT3;
+constexpr float MATH_2_3 = 2.0 / 3.0;
+constexpr float MATH_1_325 = 1.0 / 325.0;
+constexpr float MATH_N2_325 = -2.0 / 325.0;
 
 MyReg::MyReg(float mKp, float mTi, float mLh, float mLl) : Kp(mKp),
                                                            Ts_Ti(mTi),
@@ -67,10 +67,15 @@ float MyReg::Calculate(input_t input)
     return out;
 }
 
-float MyReg::Ramp(float input, float delay, float Ts)
+float MyReg::Ramp(float target, float slew, float Ts)
 {
-    static float out_old = input;
-    return input += Ts * delay * (input - out_old);
+    static float y = 0.0f;
+    float step = slew * Ts;              // max zmiana na próbkę
+    float e = target - y;
+    if (e > step) e = step;
+    if (e < -step) e = -step;
+    y += e;
+    return y;
 }
 
 /* Select the proper regulator
@@ -87,8 +92,8 @@ float MyReg::selectController(float power, float voltage, float current)
 ref_frame_t MyReg::abc_ab(ref_frame_t &in)
 {
     ref_frame_t out;
-    out.alfa = in.a;
-    out.beta = (1.0f / sqrt(3.0f)) * (2.0f * in.b + in.a);
+    out.alpha = (2/3)*(a - 0.5*b - 0.5*c)
+    out.beta  = (2/3)*( (sqrt(3)/2)*b - (sqrt(3)/2)*c )
     return out;
 }
 

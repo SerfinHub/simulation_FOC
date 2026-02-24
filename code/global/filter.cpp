@@ -1,14 +1,15 @@
 /*
- * filter.h
+ * filter.cpp
  * SBACH
  * 24.05.2022
  */
+
 #include "filter.h"
 
-Filter::Filter()
-    : fParam()
-{
-}
+Filter::Filter() : fParam(),
+    xn0(0.0f), xn1(0.0f), xn2(0.0f),
+    yn(0.0f), yn1(0.0f), yn2(0.0f)
+{}
 
 // TODO: let's make other high order filters
 float Filter::filterValue()
@@ -21,4 +22,16 @@ float Filter::filterValue()
     yn1 = yn;
 
     return yn;
+}
+
+void Filter::reset(float x0)
+{
+    xn0 = xn1 = xn2 = x0;
+    yn  = yn1 = yn2 = x0;
+}
+
+float Filter::step(float x)
+{
+    xn0 = x;
+    return filterValue();
 }

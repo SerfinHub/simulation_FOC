@@ -1,5 +1,5 @@
 /*
- * filter.cpp
+ * filter.h
  * SBACH
  * 24.05.2022
  */
@@ -33,4 +33,6 @@ public:
     float yn2;
 
     float filterValue();
+    void reset(float x0);
+    float step(float x);
 };

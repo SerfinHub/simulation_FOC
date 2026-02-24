@@ -17,7 +17,7 @@ float SVM_machine::calc_modulation_index(float alfa, float beta)
 {
     SVM.U_motor = sqrt(alfa * alfa + beta * beta);
 
-    SVM.M_index = (sqrt(3.3f) * SVM.U_motor) / Meas_filter.U_dc1;
+    SVM.M_index = (sqrt(3.0f) * SVM.U_motor) / Meas_filter.U_dc1;
 
     /* Flux limitation */
     if (SVM.M_index > 1.0f)
@@ -31,17 +31,17 @@ float SVM_machine::calc_modulation_index(float alfa, float beta)
 
 void SVM_machine::select_state(float theta)
 {
-    if ((0 <= theta) & (theta < MATH_PI_3))
+    if ((0 <= theta) && (theta < MATH_PI_3))
         Mstate = SVM_001;
-    if ((MATH_PI_3 <= theta) & (theta < MATH_2PI_3))
+    if ((MATH_PI_3 <= theta) && (theta < MATH_2PI_3))
         Mstate = SVM_011;
-    if ((MATH_2PI_3 <= theta) & (theta < MATH_PI))
+    if ((MATH_2PI_3 <= theta) && (theta < MATH_PI))
         Mstate = SVM_010;
-    if ((MATH_PI <= theta) & (theta < MATH_4PI_3))
+    if ((MATH_PI <= theta) && (theta < MATH_4PI_3))
         Mstate = SVM_110;
-    if ((MATH_4PI_3 <= theta) & (theta < MATH_5PI_3))
+    if ((MATH_4PI_3 <= theta) && (theta < MATH_5PI_3))
         Mstate = SVM_100;
-    if ((MATH_5PI_3 <= theta) & (theta < 2.0f * MATH_PI))
+    if ((MATH_5PI_3 <= theta) && (theta < 2.0f * MATH_PI))
         Mstate = SVM_101;
 }
 

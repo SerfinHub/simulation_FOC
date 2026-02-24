@@ -3,6 +3,7 @@
  * SBACH
  * 03.04.2022
  */
+ 
 #include "type.h"
 #include "filter.h"
 
@@ -42,27 +43,35 @@ void portInit(struct SimulationState *aState)
 /* Reading of cycling parameters */
 void measRead(struct SimulationState *aState)
 {
-	Meas.U_dc1 = (float)aState->inputs[0];
-	Meas.I_m1 = (float)aState->inputs[1];
-	Meas.I_m2 = (float)aState->inputs[2];
-	Meas.I_m3 = (float)aState->inputs[3];
-	Meas.theta = (float)aState->inputs[4];
-	Meas.speed = (float)aState->inputs[5];
+    static bool filters_inited = false;
 
-	Set.current_ref = (float)aState->inputs[6];
-	Set.torque_ref = (float)aState->inputs[7];
-	Set.speed_ref = (float)aState->inputs[8];
-	Set.position_ref = (float)aState->inputs[9];
+    Meas.U_dc1  = (float)aState->inputs[0];
+    Meas.I_m1   = (float)aState->inputs[1];
+    Meas.I_m2   = (float)aState->inputs[2];
+    Meas.I_m3   = (float)aState->inputs[3];
+    Meas.theta  = (float)aState->inputs[4];
+    Meas.speed  = (float)aState->inputs[5];
 
-	U_dc1_IIR.xn0 = Meas.U_dc1;
-	I_m1_IIR.xn0 = Meas.I_m1;
-	I_m2_IIR.xn0 = Meas.I_m2;
-	I_m3_IIR.xn0 = Meas.I_m3;
+    Set.current_ref   = (float)aState->inputs[6];
+    Set.torque_ref    = (float)aState->inputs[7];
+    Set.speed_ref     = (float)aState->inputs[8];
+    Set.position_ref  = (float)aState->inputs[9];
 
-	Meas_filter.U_dc1 = U_dc1_IIR.filterValue();
-	Meas_filter.I_m1 = I_m1_IIR.filterValue();
-	Meas_filter.I_m2 = I_m2_IIR.filterValue();
-	Meas_filter.I_m3 = I_m3_IIR.filterValue();
+    // First time init
+    if (!filters_inited)
+    {
+        U_dc1_IIR.reset(Meas.U_dc1);
+        I_m1_IIR.reset(Meas.I_m1);
+        I_m2_IIR.reset(Meas.I_m2);
+        I_m3_IIR.reset(Meas.I_m3);
+        filters_inited = true;
+    }
+
+    // Filtration
+    Meas_filter.U_dc1 = U_dc1_IIR.step(Meas.U_dc1);
+    Meas_filter.I_m1  = I_m1_IIR.step(Meas.I_m1);
+    Meas_filter.I_m2  = I_m2_IIR.step(Meas.I_m2);
+    Meas_filter.I_m3  = I_m3_IIR.step(Meas.I_m3);
 }
 
 /* Present state data for different channels in PLECS*/
