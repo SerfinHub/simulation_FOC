@@ -17,6 +17,11 @@ target_link_libraries(${PROJECT_NAME}
     FuncGlobal
 )
 
+target_link_options(${PROJECT_NAME} PRIVATE
+  -static-libgcc
+  -static-libstdc++
+)
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
   WINDOWS_EXPORT_ALL_SYMBOLS ON
 

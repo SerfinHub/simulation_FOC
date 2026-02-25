@@ -52,21 +52,25 @@ private:
     float lim_L;
 };
 
-extern const double MATH_PI;
-extern const double MATH_2PI;
-extern const double MATH_2PI_3;
-extern const double MATH_4PI_3;
-extern const double MATH_5PI_3;
-extern const double MATH_PI_3;
-extern const double MATH_1_2PI;
-extern const double MATH_1_PI;
-extern const double MATH_1_3;
-extern const double MATH_1_SQRT3;
-extern const double MATH_1_SQRT2;
-extern const double MATH_SQRT2_3;
-extern const double MATH_SQRT3_2;
-extern const double MATH_SQRT2;
-extern const double MATH_SQRT3;
-extern const double MATH_2_3;
-extern const double MATH_1_325;
-extern const double MATH_N2_325;
+#define myMATH_PI 3.1415926535897932384626433832795
+#define myMATH_SQRT3 1.7320508075688772935274463415059
+#define myMATH_SQRT2 1.4142135623730950488016887242097
+
+constexpr float MATH_PI = myMATH_PI;
+constexpr float MATH_2PI = myMATH_PI * 2.0f;
+constexpr float MATH_2PI_3 = myMATH_PI * 2.0f / 3.0f;
+constexpr float MATH_4PI_3 = myMATH_PI * 4.0f / 3.0f;
+constexpr float MATH_5PI_3 = myMATH_PI * 5.0f / 3.0f;
+constexpr float MATH_PI_3 = myMATH_PI / 3.0f;
+constexpr float MATH_1_2PI = 1.0f / (myMATH_PI * 2.0f);
+constexpr float MATH_1_PI = 1.0f / myMATH_PI;
+constexpr float MATH_1_3 = 1.0f / 3.0f;
+constexpr float MATH_1_SQRT3 = 1.0f / myMATH_SQRT3;
+constexpr float MATH_1_SQRT2 = 1.0f / myMATH_SQRT2;
+constexpr float MATH_SQRT2_3 = myMATH_SQRT2 / 3.0f;
+constexpr float MATH_SQRT3_2 = myMATH_SQRT3 / 2.0f;
+constexpr float MATH_SQRT2 = myMATH_SQRT2;
+constexpr float MATH_SQRT3 = myMATH_SQRT3;
+constexpr float MATH_2_3 = 2.0f / 3.0f;
+constexpr float MATH_1_325 = 1.0f / 325.0f;
+constexpr float MATH_N2_325 = -2.0f / 325.0f;
