@@ -7,7 +7,7 @@
       "command": "cmd.exe",
       "args": [
         "/d", "/c",
-        "set \"PATH=C:\\msys64\\mingw64\\bin;C:\\msys64\\usr\\bin;%PATH%\" && cmake -S . -B build-mingw -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=C:\\msys64\\mingw64\\bin\\ninja.exe -DCMAKE_C_COMPILER=C:\\msys64\\mingw64\\bin\\gcc.exe -DCMAKE_CXX_COMPILER=C:\\msys64\\mingw64\\bin\\g++.exe"
+        "set \"PATH=C:\\msys64\\mingw64\\bin;C:\\msys64\\usr\\bin;%PATH%\" && cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=C:\\msys64\\mingw64\\bin\\ninja.exe -DCMAKE_C_COMPILER=C:\\msys64\\mingw64\\bin\\gcc.exe -DCMAKE_CXX_COMPILER=C:\\msys64\\mingw64\\bin\\g++.exe"
       ],
       "problemMatcher": []
     },
@@ -17,19 +17,19 @@
       "command": "cmd.exe",
       "args": [
         "/d", "/c",
-        "set \"PATH=C:\\msys64\\mingw64\\bin;C:\\msys64\\usr\\bin;%PATH%\" && cmake --build build-mingw"
+        "set \"PATH=C:\\msys64\\mingw64\\bin;C:\\msys64\\usr\\bin;%PATH%\" && cmake --build build"
       ],
       "group": { "kind": "build", "isDefault": true },
       "dependsOn": ["CMake: configure (MinGW+Ninja)"],
       "problemMatcher": []
     },
     {
-      "label": "CMake: clean (remove build-mingw)",
+      "label": "CMake: clean (remove build)",
       "type": "shell",
       "command": "cmd.exe",
       "args": [
         "/d", "/c",
-        "if exist build-mingw rmdir /s /q build-mingw"
+        "if exist build rmdir /s /q build"
       ],
       "problemMatcher": []
     }
