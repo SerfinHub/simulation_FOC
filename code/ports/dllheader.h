@@ -24,11 +24,11 @@ extern "C" {
 	};
 
 	struct SimulationState {
-		const float* const inputs;     /* array of input values (read-only)      */
-		float* const outputs;          /* array of output values (to fill by DLL) */
-		float* const states;           /* array of discrete states (read/write)  */
-		const float* const parameters; /* array of parameters (read-only)        */
-		const float time;              /* current simulation time (read-only)    */
+		const double* const inputs;     /* array of input values (read-only)      */
+		double* const outputs;          /* array of output values (to fill by DLL) */
+		double* const states;           /* array of discrete states (read/write)  */
+		const double* const parameters; /* array of parameters (read-only)        */
+		const double time;              /* current simulation time (read-only)    */
 		const char* errorMessage;       /* error message to set by DLL            */
 		void* userData;                 /* pointer to any DLL data (untouched by PLECS) */
 	};

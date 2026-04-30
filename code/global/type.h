@@ -19,9 +19,9 @@
 
 #define PI_antiwindup_fast_asm PI_antiwindup_fast
 
-#define GPIO_SET(x)    (aState_global->outputs[(x)] = 1.0f)
-#define GPIO_CLEAR(x)  (aState_global->outputs[(x)] = 0.0f)
-#define GPIO_TOGGLE(x) (aState_global->outputs[(x)] = (aState_global->outputs[(x)] > 0.5f ? 0.0f : 1.0f))
+#define GPIO_SET(x)    (aState_global->outputs[x] = 1.0)
+#define GPIO_CLEAR(x)  (aState_global->outputs[x] = 0.0)
+#define GPIO_TOGGLE(x) (aState_global->outputs[x] = (aState_global->outputs[x] > 0.5 ? 0.0 : 1.0))
 
 struct Measurements_t
 {
