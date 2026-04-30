@@ -11,10 +11,22 @@ Filter::Filter() : fParam(),
     yn(0.0f), yn1(0.0f), yn2(0.0f)
 {}
 
+Filter::Filter(float a0, float a1, float a2, float b0, float b1, float b2)
+    : fParam{a0, a1, a2, b0, b1, b2},
+      xn0(0.0f), xn1(0.0f), xn2(0.0f),
+      yn(0.0f), yn1(0.0f), yn2(0.0f)
+{}
+
 // TODO: let's make other high order filters
 float Filter::filterValue()
 {
-    yn = ((fParam.b0 * xn0) + (fParam.b1 * xn1) + (fParam.b2 * xn2) + (-1.0f * fParam.a1 * yn1) + (-1.0f * fParam.a2 * yn2));
+    yn = (
+        fParam.b0 * xn0 +
+        fParam.b1 * xn1 +
+        fParam.b2 * xn2 -
+        fParam.a1 * yn1 -
+        fParam.a2 * yn2
+    ) / fParam.a0;
 
     xn2 = xn1;
     xn1 = xn0;

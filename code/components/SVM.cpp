@@ -15,33 +15,43 @@ SVM_machine::SVM_machine() : Mstate(SVM_000),
 
 float SVM_machine::calc_modulation_index(float alfa, float beta)
 {
-    SVM.U_motor = sqrt(alfa * alfa + beta * beta);
+    SVM.U_motor = std::sqrt(alfa * alfa + beta * beta);
 
-    SVM.M_index = (sqrt(3.0f) * SVM.U_motor) / Meas_filter.U_dc1;
+    const float udc_min = 1.0f;
 
-    /* Flux limitation */
-    if (SVM.M_index > 1.0f)
-        SVM.M_index = 1.0f;
-
-    if (SVM.M_index < 0.0f)
+    if (Meas_filter.U_dc1 < udc_min)
+    {
         SVM.M_index = 0.0f;
+        return SVM.M_index;
+    }
+
+    SVM.M_index = (MATH_SQRT3 * SVM.U_motor) / Meas_filter.U_dc1;
+
+    if (SVM.M_index > 1.0f) SVM.M_index = 1.0f;
+    if (SVM.M_index < 0.0f) SVM.M_index = 0.0f;
 
     return SVM.M_index;
 }
 
 void SVM_machine::select_state(float theta)
 {
-    if ((0 <= theta) && (theta < MATH_PI_3))
+    if (theta < 0.0f)
+        theta = 0.0f;
+
+    if (theta >= MATH_2PI)
+        theta = std::fmod(theta, MATH_2PI);
+
+    if (theta < MATH_PI_3)
         Mstate = SVM_001;
-    if ((MATH_PI_3 <= theta) && (theta < MATH_2PI_3))
+    else if (theta < MATH_2PI_3)
         Mstate = SVM_011;
-    if ((MATH_2PI_3 <= theta) && (theta < MATH_PI))
+    else if (theta < MATH_PI)
         Mstate = SVM_010;
-    if ((MATH_PI <= theta) && (theta < MATH_4PI_3))
+    else if (theta < MATH_4PI_3)
         Mstate = SVM_110;
-    if ((MATH_4PI_3 <= theta) && (theta < MATH_5PI_3))
+    else if (theta < MATH_5PI_3)
         Mstate = SVM_100;
-    if ((MATH_5PI_3 <= theta) && (theta < 2.0f * MATH_PI))
+    else
         Mstate = SVM_101;
 }
 
@@ -81,7 +91,7 @@ void SVM_machine::handle_001(float theta)
 {
     /* Time index */
     SVM.T_2 = SVM.M_index * std::sin(theta);
-    SVM.T_1 = SVM.M_index * std::sqrt(3.0f) * std::cos(theta) * 0.5f - SVM.T_2 * 0.5f;
+    SVM.T_1 = SVM.M_index * MATH_SQRT3 * std::cos(theta) * 0.5f - SVM.T_2 * 0.5f;
     SVM.T_0 = 1.0f - (SVM.T_1 + SVM.T_2);
 
     /* Calculated duty */
@@ -96,7 +106,7 @@ void SVM_machine::handle_011(float theta)
 {
     /* Time index */
     SVM.T_2 = SVM.M_index * std::sin(theta - MATH_PI_3);
-    SVM.T_1 = SVM.M_index * std::sqrt(3.0f) * std::cos(theta - MATH_PI_3) * 0.5f - SVM.T_2 * 0.5f;
+    SVM.T_1 = SVM.M_index * MATH_SQRT3 * std::cos(theta - MATH_PI_3) * 0.5f - SVM.T_2 * 0.5f;
     SVM.T_0 = 1.0f - (SVM.T_1 + SVM.T_2);
 
     /* Calculated duty */
@@ -111,7 +121,7 @@ void SVM_machine::handle_010(float theta)
 {
     /* Time index */
     SVM.T_2 = SVM.M_index * std::sin(theta - MATH_2PI_3);
-    SVM.T_1 = SVM.M_index * std::sqrt(3.0f) * std::cos(theta - MATH_2PI_3) * 0.5f - SVM.T_2 * 0.5f;
+    SVM.T_1 = SVM.M_index * MATH_SQRT3 * std::cos(theta - MATH_2PI_3) * 0.5f - SVM.T_2 * 0.5f;
     SVM.T_0 = 1.0f - (SVM.T_1 + SVM.T_2);
 
     /* Calculated duty */
@@ -126,7 +136,7 @@ void SVM_machine::handle_110(float theta)
 {
     /* Time index */
     SVM.T_2 = SVM.M_index * std::sin(theta - MATH_PI);
-    SVM.T_1 = SVM.M_index * std::sqrt(3.0f) * std::cos(theta - MATH_PI) * 0.5f - SVM.T_2 * 0.5f;
+    SVM.T_1 = SVM.M_index * MATH_SQRT3 * std::cos(theta - MATH_PI) * 0.5f - SVM.T_2 * 0.5f;
     SVM.T_0 = 1.0f - (SVM.T_1 + SVM.T_2);
 
     /* Calculated duty */
@@ -141,7 +151,7 @@ void SVM_machine::handle_100(float theta)
 {
     /* Time index */
     SVM.T_2 = SVM.M_index * std::sin(theta - MATH_4PI_3);
-    SVM.T_1 = SVM.M_index * std::sqrt(3.0f) * std::cos(theta - MATH_4PI_3) * 0.5f - SVM.T_2 * 0.5f;
+    SVM.T_1 = SVM.M_index * MATH_SQRT3 * std::cos(theta - MATH_4PI_3) * 0.5f - SVM.T_2 * 0.5f;
     SVM.T_0 = 1.0f - (SVM.T_1 + SVM.T_2);
 
     /* Calculated duty */
@@ -156,7 +166,7 @@ void SVM_machine::handle_101(float theta)
 {
     /* Time index */
     SVM.T_2 = SVM.M_index * std::sin(theta - MATH_5PI_3);
-    SVM.T_1 = SVM.M_index * std::sqrt(3.0f) * std::cos(theta - MATH_5PI_3) * 0.5f - SVM.T_2 * 0.5f;
+    SVM.T_1 = SVM.M_index * MATH_SQRT3 * std::cos(theta - MATH_5PI_3) * 0.5f - SVM.T_2 * 0.5f;
     SVM.T_0 = 1.0f - (SVM.T_1 + SVM.T_2);
 
     /* Calculated duty */
@@ -169,6 +179,7 @@ void SVM_machine::handle_101(float theta)
 
 void SVM_machine::set_outputs(float dutyA, float dutyB, float dutyC, float deadtime)
 {
+    (void)deadtime;
     if (dutyA > 1.0f)
         dutyA = 1.0f;
     if (dutyA < 0.0f)

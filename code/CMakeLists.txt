@@ -7,8 +7,24 @@ add_subdirectory(components)
 add_subdirectory(ports)
 add_subdirectory(global)
 
-
 add_library(${PROJECT_NAME} SHARED main.cpp)
+
+function(enable_project_warnings target_name)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(${target_name} PRIVATE
+      -Wall
+      -Wextra
+      -Wpedantic
+      -Wconversion
+      -Wshadow
+    )
+  endif()
+endfunction()
+
+enable_project_warnings(FuncPorts)
+enable_project_warnings(FuncComp)
+enable_project_warnings(FuncGlobal)
+enable_project_warnings(${PROJECT_NAME})
 
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
@@ -23,7 +39,10 @@ target_link_options(${PROJECT_NAME} PRIVATE
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
-  WINDOWS_EXPORT_ALL_SYMBOLS ON
+  OUTPUT_NAME "PLECS"
+  PREFIX ""
 
-  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"  # .dll (Windows)
+  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
+  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
+  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
 )

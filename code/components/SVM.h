@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <math.h>
+#include <cmath>
 #include "../global/type.h"
 #include "Controllers.h"
 

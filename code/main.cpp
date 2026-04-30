@@ -11,15 +11,41 @@ static stateMachine machine;
 /* Called once during the initialization of a new simulation.                */
 DLLEXPORT void plecsStart(struct SimulationState *aState)
 {
-	aState_global = aState;
-	portInit(aState);
+    aState_global = aState;
+
+    alarm.all = 0;
+
+    Param = {};
+    Set = {};
+    Meas = {};
+    Meas_filter = {};
+    Meas_alarm_H = {};
+    Meas_alarm_L = {};
+
+    portInit(aState);
+    measInit(aState);
+
+    machine = stateMachine();
+
+    for (int i = 0; i < DLL_OUTPUTS_NUMBER; ++i)
+    {
+        aState->outputs[i] = 0.0f;
+    }
 }
 
 /* Called whenever the simulation time reaches a multiple of the sample      */
 /* time.                                                                     */
 DLLEXPORT void plecsOutput(struct SimulationState *aState)
 {
-	measRead(aState);
+    aState_global = aState;
 
-	machine.iteration();
+    measRead(aState);
+    machine.iteration();
+}
+
+/* Called when simulation is terminated */
+DLLEXPORT void plecsTerminate(struct SimulationState* aState)
+{
+    (void)aState;
+    aState_global = nullptr;
 }

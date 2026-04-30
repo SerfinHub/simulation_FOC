@@ -9,7 +9,7 @@
 struct FilterParameters_t
 {
     float a0 = 1.0f;
-    float a1 = -1.8255;
+    float a1 = -1.8255f;
     float a2 = 0.8425f;
     float b0 = 0.0959f;
     float b1 = -0.1749f;
