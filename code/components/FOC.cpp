@@ -5,10 +5,77 @@
  */
 #include "FOC.h"
 
+static ref_frame_t Iabc{};
+static ref_frame_t Iab{};
+
+static float clampFloat(float value, float low, float high)
+{
+    if (value > high)
+    {
+        return high;
+    }
+
+    if (value < low)
+    {
+        return low;
+    }
+
+    return value;
+}
+
+static float wrapTo2Pi(float angle)
+{
+    while (angle >= MATH_2PI)
+    {
+        angle -= MATH_2PI;
+    }
+
+    while (angle < 0.0f)
+    {
+        angle += MATH_2PI;
+    }
+
+    return angle;
+}
+
+static ControlMode_t decodeControlMode(float modeInput)
+{
+    const int mode = static_cast<int>(modeInput + 0.5f);
+
+    switch (mode)
+    {
+    case CONTROL_CURRENT:
+        return CONTROL_CURRENT;
+
+    case CONTROL_TORQUE:
+        return CONTROL_TORQUE;
+
+    case CONTROL_SPEED:
+        return CONTROL_SPEED;
+
+    case CONTROL_POSITION:
+        return CONTROL_POSITION;
+
+    default:
+        return CONTROL_CURRENT;
+    }
+}
+
+static float torqueToIq(float torqueRef)
+{
+    if (MOTOR_KT > -1.0e-6f && MOTOR_KT < 1.0e-6f)
+    {
+        return 0.0f;
+    }
+
+    return clampFloat(torqueRef / MOTOR_KT, -MOTOR_MAX_IQ, MOTOR_MAX_IQ);
+}
+
 stateMachine::stateMachine()
     : Mstate(FOC_Init),
       counter_ss(0.0f),
       Mstate_last(FOC_Init),
+      controlMode_last(CONTROL_CURRENT),
       FOC{},
       ramp{},
       reg{},
@@ -21,14 +88,14 @@ stateMachine::stateMachine()
       Vab{},
       Vdq{},
       SVM{},
+      angleUnwrapper{},
+      positionPlanner{},
+      trajState{},
       I_d(0.0f),
       I_q(0.0f),
       Mindex(0.0f)
 {
 }
-
-static ref_frame_t Iabc{};
-static ref_frame_t Iab{};
 
 void operator++(FOC_enum &val, int)
 {
@@ -80,6 +147,11 @@ void stateMachine::handle_sInit(FOC_t &foc)
     {
         Mstate_last = Mstate;
     }
+
+    angleUnwrapper.Reset(Meas.theta);
+    positionPlanner.Reset(Meas.theta);
+    trajState = positionPlanner.GetState();
+
     next_state();
 }
 
@@ -92,12 +164,6 @@ void stateMachine::handle_sSS(FOC_t &foc)
 
         // High keys set to 1 to magnetize stator.
         foc.duty = 1.0f;
-        // aState_global->outputs[0] = 1.0f;
-        // aState_global->outputs[1] = 0.0f;
-        // aState_global->outputs[2] = 1.0f;
-        // aState_global->outputs[3] = 0.0f;
-        // aState_global->outputs[4] = 1.0f;
-        // aState_global->outputs[5] = 0.0f;
     }
 
     counter_ss += Param.Ts;
@@ -122,21 +188,22 @@ void stateMachine::handle_sActive(FOC_t &foc)
     {
         counter_ss = 0.0f;
         Mstate_last = Mstate;
+
+        angleUnwrapper.Reset(Meas.theta);
+        Meas.position = angleUnwrapper.GetPosition();
+        positionPlanner.Reset(Meas.position);
+        trajState = positionPlanner.GetState();
+
+        piP.Reset(0.0f);
+        piS.Reset(0.0f);
     }
 
-    /* Theta recalculation */
-    foc.FrameAngle = Meas.theta;
+    // Angle sensor gives wrapped mechanical angle [-pi, pi].
+    // Meas.position is the unwrapped multi-turn mechanical position [rad].
+    Meas.position = angleUnwrapper.Update(Meas.theta);
 
-    /* Position control loop */
-    // Meas.position += 10.1f * Meas.speed * Param.Ts;
-
-    // inP.error = Set.position_ref - Meas.position;
-    // piP.out = piP.Calculate(inP);
-
-    /* Speed control loop */
-    inS.error = Set.speed_ref - Meas.speed;
-    // inS.error = piP.out - Meas.speed;
-    piS.out = piS.Calculate(inS);
+    // Electrical frame angle for FOC. MOTOR_POLE_PAIRS is 1.0 for now.
+    foc.FrameAngle = wrapTo2Pi(Meas.position * MOTOR_POLE_PAIRS + MOTOR_THETA_OFFSET);
 
     /* Current -> dq */
     Iabc.a = Meas_filter.I_m1;
@@ -149,12 +216,74 @@ void stateMachine::handle_sActive(FOC_t &foc)
     I_d = Idq.d;
     I_q = Idq.q;
 
-    /* Iq pi torque */
-    inIq.error = piS.out - I_q;
+    const ControlMode_t controlMode = decodeControlMode(Set.control_mode);
+
+    if (controlMode != controlMode_last)
+    {
+        // External loops must not keep old integral state after mode changes.
+        piP.Reset(0.0f);
+        piS.Reset(0.0f);
+
+        if (controlMode == CONTROL_POSITION)
+        {
+            positionPlanner.Reset(Meas.position);
+            trajState = positionPlanner.GetState();
+        }
+
+        controlMode_last = controlMode;
+    }
+
+    float id_ref_cmd = 0.0f;
+    float iq_ref_cmd = 0.0f;
+    float torque_ref_cmd = 0.0f;
+    float speed_ref_cmd = 0.0f;
+
+    switch (controlMode)
+    {
+    case CONTROL_CURRENT:
+        // Direct q-axis current control [A].
+        iq_ref_cmd = clampFloat(Set.current_ref, -MOTOR_MAX_IQ, MOTOR_MAX_IQ);
+        break;
+
+    case CONTROL_TORQUE:
+        // Direct torque control [Nm]. Kt is temporarily 1.0 Nm/A.
+        torque_ref_cmd = clampFloat(Set.torque_ref, -MOTOR_MAX_TORQUE, MOTOR_MAX_TORQUE);
+        iq_ref_cmd = torqueToIq(torque_ref_cmd);
+        break;
+
+    case CONTROL_SPEED:
+        // Speed loop output is torque_ref_cmd [Nm].
+        speed_ref_cmd = clampFloat(Set.speed_ref, -MOTOR_MAX_SPEED, MOTOR_MAX_SPEED);
+        inS.error = speed_ref_cmd - Meas.speed;
+        torque_ref_cmd = clampFloat(piS.Calculate(inS), -MOTOR_MAX_TORQUE, MOTOR_MAX_TORQUE);
+        iq_ref_cmd = torqueToIq(torque_ref_cmd);
+        break;
+
+    case CONTROL_POSITION:
+        // Full-state S-curve planning: planner starts from current trajectory
+        // position, velocity and acceleration when the target changes.
+        trajState = positionPlanner.Step(Set.position_ref, Param.Ts);
+
+        inP.error = trajState.position - Meas.position;
+        speed_ref_cmd = piP.Calculate(inP) + trajState.velocity;
+        speed_ref_cmd = clampFloat(speed_ref_cmd, -MOTOR_MAX_SPEED, MOTOR_MAX_SPEED);
+
+        inS.error = speed_ref_cmd - Meas.speed;
+        torque_ref_cmd = clampFloat(piS.Calculate(inS), -MOTOR_MAX_TORQUE, MOTOR_MAX_TORQUE);
+        iq_ref_cmd = torqueToIq(torque_ref_cmd);
+        break;
+
+    default:
+        iq_ref_cmd = 0.0f;
+        break;
+    }
+
+    /* Iq PI torque/current loop */
+    inIq.error = iq_ref_cmd - I_q;
     Vdq.q = piIq.Calculate(inIq);
 
-    /* Id pi flux */
-    inId.error = 0.0f - I_d;
+    /* Id PI flux loop */
+    inId.error = id_ref_cmd - I_d;
     Vdq.d = piId.Calculate(inId);
 
     /* Vdq -> Vab */
@@ -171,5 +300,11 @@ void stateMachine::handle_sActive(FOC_t &foc)
     Mindex = SVM.calc_modulation_index(Vab.alfa, Vab.beta);
     SVM.iteration(foc.theta);
 
-    Oscilloscope(Set.speed_ref, Meas.speed, inS.error, piS.out);
+    // Debug channels in PLECS outputs[6..9].
+    // 6: mode, 7: planned position, 8: speed command, 9: Iq reference.
+    Oscilloscope(
+        static_cast<float>(controlMode),
+        trajState.position,
+        speed_ref_cmd,
+        iq_ref_cmd);
 }

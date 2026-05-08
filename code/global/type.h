@@ -13,7 +13,7 @@
 #include "../ports/dllheader.h"
 
 /* IO DEFINES */
-#define DLL_INPUTS_NUMBER 10
+#define DLL_INPUTS_NUMBER 11
 #define DLL_OUTPUTS_NUMBER 10
 #define DLL_PARAMETERS_NUMBER 2
 
@@ -50,6 +50,7 @@ struct Settings_t
     float P_old{};
 
     float state{};
+    float control_mode{};
 };
 
 struct ALARM_BITS_t

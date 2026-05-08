@@ -26,17 +26,19 @@ static Filter I_m3_IIR;
 
 static void readInputsAndReferences(struct SimulationState *aState)
 {
-    Meas.U_dc1 = aState->inputs[0];
-    Meas.I_m1 = aState->inputs[1];
-    Meas.I_m2 = aState->inputs[2];
-    Meas.I_m3 = aState->inputs[3];
-    Meas.theta = aState->inputs[4];
-    Meas.speed = aState->inputs[5];
+    Meas.U_dc1 = static_cast<float>(aState->inputs[0]);
+    Meas.I_m1 = static_cast<float>(aState->inputs[1]);
+    Meas.I_m2 = static_cast<float>(aState->inputs[2]);
+    Meas.I_m3 = static_cast<float>(aState->inputs[3]);
+    // Angle sensor on the motor shaft. Wrapped mechanical angle [-pi, pi] [rad].
+    Meas.theta = static_cast<float>(aState->inputs[4]);
+    Meas.speed = static_cast<float>(aState->inputs[5]);
 
-    Set.current_ref = aState->inputs[6];
-    Set.torque_ref = aState->inputs[7];
-    Set.speed_ref = aState->inputs[8];
-    Set.position_ref = aState->inputs[9];
+    Set.current_ref = static_cast<float>(aState->inputs[6]);
+    Set.torque_ref = static_cast<float>(aState->inputs[7]);
+    Set.speed_ref = static_cast<float>(aState->inputs[8]);
+    Set.position_ref = static_cast<float>(aState->inputs[9]);
+    Set.control_mode = static_cast<float>(aState->inputs[10]);
 }
 
 /* Called once before the simulation */
@@ -51,8 +53,8 @@ DLLEXPORT void plecsSetSizes(struct SimulationSizes *aSizes)
 /* Only one measurement of simulation parameters */
 void portInit(struct SimulationState *aState)
 {
-    Param.Ts = aState->parameters[0];
-    Param.Cdc = aState->parameters[1];
+    Param.Ts = static_cast<float>(aState->parameters[0]);
+    Param.Cdc = static_cast<float>(aState->parameters[1]);
 }
 
 /* Initialize measurements and filters at the start of each simulation. */
@@ -60,7 +62,9 @@ void measInit(struct SimulationState *aState)
 {
     readInputsAndReferences(aState);
 
-    Meas.position = 0.0f;
+    // Initial position is the wrapped angle. The FOC state machine unwraps it
+    // to a continuous multi-turn position when it starts running.
+    Meas.position = Meas.theta;
 
     U_dc1_IIR.reset(Meas.U_dc1);
     I_m1_IIR.reset(Meas.I_m1);

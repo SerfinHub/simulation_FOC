@@ -32,6 +32,7 @@ public:
     ref_frame_t frame{};
 
     float Calculate(input_t input);
+    void Reset(float outputInitial = 0.0f);
     float Ramp(float input, float delay, float Ts);
     float selectController(float power, float voltage, float current);
 

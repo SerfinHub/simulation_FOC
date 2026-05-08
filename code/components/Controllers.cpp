@@ -58,6 +58,14 @@ float MyReg::Calculate(input_t input)
     return regulator_output;
 }
 
+void MyReg::Reset(float outputInitial)
+{
+    integrator = outputInitial;
+    proportional = 0.0f;
+    out = outputInitial;
+    ramp_y = outputInitial;
+}
+
 float MyReg::Ramp(float target, float slew, float Ts)
 {
     const float step = slew * Ts;
