@@ -31,7 +31,7 @@ enum ControlMode_t
 #define MOTOR_KT              1.0f    // [Nm/A], temporary torque constant
 #define MOTOR_MAX_IQ          20.0f   // [A]
 #define MOTOR_MAX_TORQUE      20.0f   // [Nm]
-#define MOTOR_MAX_SPEED       100.0f  // [rad/s]
+#define MOTOR_MAX_SPEED       500.0f  // [rad/s]
 #define MOTOR_POLE_PAIRS      1.0f    // mechanical-to-electrical angle ratio
 #define MOTOR_THETA_OFFSET    0.0f    // [rad]
 
