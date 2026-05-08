@@ -128,14 +128,14 @@ void stateMachine::handle_sActive(FOC_t &foc)
     foc.FrameAngle = Meas.theta;
 
     /* Position control loop */
-    Meas.position += 10.1f * Meas.speed * Param.Ts;
+    // Meas.position += 10.1f * Meas.speed * Param.Ts;
 
-    inP.error = Set.position_ref - Meas.position;
-    piP.out = piP.Calculate(inP);
+    // inP.error = Set.position_ref - Meas.position;
+    // piP.out = piP.Calculate(inP);
 
     /* Speed control loop */
-    // inS.error = Set.speed_ref - Meas.speed;
-    inS.error = piP.out - Meas.speed;
+    inS.error = Set.speed_ref - Meas.speed;
+    // inS.error = piP.out - Meas.speed;
     piS.out = piS.Calculate(inS);
 
     /* Current -> dq */
@@ -171,5 +171,5 @@ void stateMachine::handle_sActive(FOC_t &foc)
     Mindex = SVM.calc_modulation_index(Vab.alfa, Vab.beta);
     SVM.iteration(foc.theta);
 
-    Oscilloscope(Set.position_ref, Meas.position, inP.error, piP.out);
+    Oscilloscope(Set.speed_ref, Meas.speed, inS.error, piS.out);
 }

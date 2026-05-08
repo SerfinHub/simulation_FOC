@@ -41,9 +41,6 @@ DLLEXPORT void plecsOutput(struct SimulationState *aState)
 
     measRead(aState);
     machine.iteration();
-    
-    aState->outputs[6] = machine.Mstate;
-    aState->outputs[7] = machine.Mstate;
 }
 
 /* Called when simulation is terminated */
