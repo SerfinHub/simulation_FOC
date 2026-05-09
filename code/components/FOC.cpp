@@ -200,7 +200,7 @@ void stateMachine::handle_sActive(FOC_t &foc)
 
     // Angle sensor gives wrapped mechanical angle [-pi, pi].
     // Meas.position is the unwrapped multi-turn mechanical position [rad].
-    Meas.position = angleUnwrapper.Update(Meas.theta);
+    Meas.position = MOTOR_POSITION_DIRECTION * angleUnwrapper.Update(Meas.theta);
 
     // Electrical frame angle for FOC. MOTOR_POLE_PAIRS is 1.0 for now.
     foc.FrameAngle = wrapTo2Pi(Meas.position * MOTOR_POLE_PAIRS + MOTOR_THETA_OFFSET);
@@ -270,7 +270,7 @@ void stateMachine::handle_sActive(FOC_t &foc)
 
         inS.error = speed_ref_cmd - Meas.speed;
         torque_ref_cmd = clampFloat(piS.Calculate(inS), -MOTOR_MAX_TORQUE, MOTOR_MAX_TORQUE);
-        iq_ref_cmd = MOTOR_TORQUE_DIRECTION * torqueToIq(torque_ref_cmd);
+        iq_ref_cmd = torqueToIq(torque_ref_cmd);
         break;
 
     default:
@@ -302,9 +302,9 @@ void stateMachine::handle_sActive(FOC_t &foc)
 
     // Debug channels
     Oscilloscope(
-        Meas.position,
-        Meas.speed,
-        speed_ref_cmd,
-        iq_ref_cmd
+        Meas.position,                       // outputs[6]
+        trajState.position - Meas.position,  // outputs[7]
+        speed_ref_cmd,                       // outputs[8]
+        iq_ref_cmd                           // outputs[9]
     );
 }
