@@ -68,11 +68,7 @@ static float torqueToIq(float torqueRef)
         return 0.0f;
     }
 
-    return clampFloat(
-        MOTOR_TORQUE_DIRECTION * torqueRef / MOTOR_KT,
-        -MOTOR_MAX_IQ,
-        MOTOR_MAX_IQ
-    );
+    return clampFloat(torqueRef / MOTOR_KT, -MOTOR_MAX_IQ, MOTOR_MAX_IQ);
 }
 
 stateMachine::stateMachine()
@@ -194,7 +190,7 @@ void stateMachine::handle_sActive(FOC_t &foc)
         Mstate_last = Mstate;
 
         angleUnwrapper.Reset(Meas.theta);
-        Meas.position = MOTOR_POSITION_DIRECTION * angleUnwrapper.GetPosition();
+        Meas.position = angleUnwrapper.GetPosition();
         positionPlanner.Reset(Meas.position);
         trajState = positionPlanner.GetState();
 
@@ -204,17 +200,10 @@ void stateMachine::handle_sActive(FOC_t &foc)
 
     // Angle sensor gives wrapped mechanical angle [-pi, pi].
     // Meas.position is the unwrapped multi-turn mechanical position [rad].
-    // Raw angle from sensor [-pi, pi]
-    const float raw_angle = Meas.theta;
+    Meas.position = angleUnwrapper.Update(Meas.theta);
 
-    // Raw multi-turn mechanical position
-    const float raw_unwrapped_position = angleUnwrapper.Update(raw_angle);
-
-    // Servo/control position convention
-    Meas.position = MOTOR_POSITION_DIRECTION * raw_unwrapped_position;
-
-    // Electrical frame angle for FOC.
-    foc.FrameAngle = wrapTo2Pi(raw_angle * MOTOR_POLE_PAIRS + MOTOR_THETA_OFFSET);
+    // Electrical frame angle for FOC. MOTOR_POLE_PAIRS is 1.0 for now.
+    foc.FrameAngle = wrapTo2Pi(Meas.position * MOTOR_POLE_PAIRS + MOTOR_THETA_OFFSET);
 
     /* Current -> dq */
     Iabc.a = Meas_filter.I_m1;
@@ -259,7 +248,7 @@ void stateMachine::handle_sActive(FOC_t &foc)
     case CONTROL_TORQUE:
         // Direct torque control [Nm]. Kt is temporarily 1.0 Nm/A.
         torque_ref_cmd = clampFloat(Set.torque_ref, -MOTOR_MAX_TORQUE, MOTOR_MAX_TORQUE);
-        iq_ref_cmd = torqueToIq(torque_ref_cmd);
+        iq_ref_cmd = MOTOR_TORQUE_DIRECTION  * torqueToIq(torque_ref_cmd);
         break;
 
     case CONTROL_SPEED:
@@ -267,7 +256,7 @@ void stateMachine::handle_sActive(FOC_t &foc)
         speed_ref_cmd = clampFloat(Set.speed_ref, -MOTOR_MAX_SPEED, MOTOR_MAX_SPEED);
         inS.error = speed_ref_cmd - Meas.speed;
         torque_ref_cmd = clampFloat(piS.Calculate(inS), -MOTOR_MAX_TORQUE, MOTOR_MAX_TORQUE);
-        iq_ref_cmd = torqueToIq(torque_ref_cmd);
+        iq_ref_cmd = MOTOR_TORQUE_DIRECTION * torqueToIq(torque_ref_cmd);
         break;
 
     case CONTROL_POSITION:
@@ -281,7 +270,7 @@ void stateMachine::handle_sActive(FOC_t &foc)
 
         inS.error = speed_ref_cmd - Meas.speed;
         torque_ref_cmd = clampFloat(piS.Calculate(inS), -MOTOR_MAX_TORQUE, MOTOR_MAX_TORQUE);
-        iq_ref_cmd = torqueToIq(torque_ref_cmd);
+        iq_ref_cmd = MOTOR_TORQUE_DIRECTION * torqueToIq(torque_ref_cmd);
         break;
 
     default:
@@ -313,9 +302,9 @@ void stateMachine::handle_sActive(FOC_t &foc)
 
     // Debug channels
     Oscilloscope(
-        Meas.position,                       // outputs[6]
-        trajState.position - Meas.position,  // outputs[7]
-        speed_ref_cmd,                       // outputs[8]
-        iq_ref_cmd                           // outputs[9]
+        speed_ref_cmd,              // outputs[6]
+        Meas.speed,                 // outputs[7]
+        speed_ref_cmd - Meas.speed, // outputs[8]
+        iq_ref_cmd                  // outputs[9]
     );
 }

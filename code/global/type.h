@@ -23,8 +23,7 @@
 #define GPIO_CLEAR(x)  (aState_global->outputs[x] = 0.0)
 #define GPIO_TOGGLE(x) (aState_global->outputs[x] = (aState_global->outputs[x] > 0.5 ? 0.0 : 1.0))
 
-#define MOTOR_TORQUE_DIRECTION 1.0f
-#define MOTOR_POSITION_DIRECTION -1.0f
+#define MOTOR_TORQUE_DIRECTION -1.0f
 
 struct Measurements_t
 {
