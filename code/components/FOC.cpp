@@ -300,11 +300,11 @@ void stateMachine::handle_sActive(FOC_t &foc)
     Mindex = SVM.calc_modulation_index(Vab.alfa, Vab.beta);
     SVM.iteration(foc.theta);
 
-    // Debug channels in PLECS outputs[6..9].
-    // 6: mode, 7: planned position, 8: speed command, 9: Iq reference.
+    // Debug channels
     Oscilloscope(
-        static_cast<float>(controlMode),
-        trajState.position,
-        speed_ref_cmd,
-        iq_ref_cmd);
+        Set.position_ref,       // outputs[6]
+        trajState.position,     // outputs[7]
+        trajState.velocity,     // outputs[8]
+        trajState.done ? 1.0f : 0.0f // outputs[9]
+    );
 }
