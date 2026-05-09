@@ -32,11 +32,11 @@ static void readInputsAndReferences(struct SimulationState *aState)
     Meas.I_m3 = static_cast<float>(aState->inputs[3]);
     // Angle sensor on the motor shaft. Wrapped mechanical angle [-pi, pi] [rad].
     Meas.theta = static_cast<float>(aState->inputs[4]);
-    Meas.speed = MOTOR_TORQUE_DIRECTION * static_cast<float>(aState->inputs[5]);
+    Meas.speed = static_cast<float>(aState->inputs[5]);
 
     Set.current_ref = static_cast<float>(aState->inputs[6]);
     Set.torque_ref = static_cast<float>(aState->inputs[7]);
-    Set.speed_ref = MOTOR_TORQUE_DIRECTION * static_cast<float>(aState->inputs[8]);
+    Set.speed_ref = static_cast<float>(aState->inputs[8]);
     Set.position_ref = static_cast<float>(aState->inputs[9]);
     Set.control_mode = static_cast<float>(aState->inputs[10]);
 }
