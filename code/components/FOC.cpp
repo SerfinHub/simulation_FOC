@@ -302,9 +302,9 @@ void stateMachine::handle_sActive(FOC_t &foc)
 
     // Debug channels
     Oscilloscope(
-        Set.position_ref,       // outputs[6]
-        trajState.position,     // outputs[7]
-        trajState.velocity,     // outputs[8]
-        trajState.done ? 1.0f : 0.0f // outputs[9]
+        Meas.position,                       // outputs[6]
+        trajState.position - Meas.position,  // outputs[7]
+        speed_ref_cmd,                       // outputs[8]
+        iq_ref_cmd                           // outputs[9]
     );
 }
