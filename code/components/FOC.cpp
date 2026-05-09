@@ -68,7 +68,11 @@ static float torqueToIq(float torqueRef)
         return 0.0f;
     }
 
-    return clampFloat(torqueRef / MOTOR_KT, -MOTOR_MAX_IQ, MOTOR_MAX_IQ);
+    return clampFloat(
+        MOTOR_TORQUE_DIRECTION * torqueRef / MOTOR_KT,
+        -MOTOR_MAX_IQ,
+        MOTOR_MAX_IQ
+    );
 }
 
 stateMachine::stateMachine()
@@ -190,7 +194,7 @@ void stateMachine::handle_sActive(FOC_t &foc)
         Mstate_last = Mstate;
 
         angleUnwrapper.Reset(Meas.theta);
-        Meas.position = angleUnwrapper.GetPosition();
+        Meas.position = MOTOR_POSITION_DIRECTION * angleUnwrapper.GetPosition();
         positionPlanner.Reset(Meas.position);
         trajState = positionPlanner.GetState();
 
@@ -200,10 +204,17 @@ void stateMachine::handle_sActive(FOC_t &foc)
 
     // Angle sensor gives wrapped mechanical angle [-pi, pi].
     // Meas.position is the unwrapped multi-turn mechanical position [rad].
-    Meas.position = MOTOR_POSITION_DIRECTION * angleUnwrapper.Update(Meas.theta);
+    // Raw angle from sensor [-pi, pi]
+    const float raw_angle = Meas.theta;
 
-    // Electrical frame angle for FOC. MOTOR_POLE_PAIRS is 1.0 for now.
-    foc.FrameAngle = wrapTo2Pi(Meas.position * MOTOR_POLE_PAIRS + MOTOR_THETA_OFFSET);
+    // Raw multi-turn mechanical position
+    const float raw_unwrapped_position = angleUnwrapper.Update(raw_angle);
+
+    // Servo/control position convention
+    Meas.position = MOTOR_POSITION_DIRECTION * raw_unwrapped_position;
+
+    // Electrical frame angle for FOC.
+    foc.FrameAngle = wrapTo2Pi(raw_angle * MOTOR_POLE_PAIRS + MOTOR_THETA_OFFSET);
 
     /* Current -> dq */
     Iabc.a = Meas_filter.I_m1;
