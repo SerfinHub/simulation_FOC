@@ -34,6 +34,7 @@ enum ControlMode_t
 #define MOTOR_MAX_SPEED       500.0f  // [rad/s]
 #define MOTOR_POLE_PAIRS      1.0f    // mechanical-to-electrical angle ratio
 #define MOTOR_THETA_OFFSET    0.0f    // [rad]
+#define MOTOR_TORQUE_DIRECTION -1.0f
 
 struct Reg_settings_t
 {

@@ -270,7 +270,7 @@ void stateMachine::handle_sActive(FOC_t &foc)
 
         inS.error = speed_ref_cmd - Meas.speed;
         torque_ref_cmd = clampFloat(piS.Calculate(inS), -MOTOR_MAX_TORQUE, MOTOR_MAX_TORQUE);
-        iq_ref_cmd = torqueToIq(torque_ref_cmd);
+        iq_ref_cmd = MOTOR_TORQUE_DIRECTION * torqueToIq(torque_ref_cmd);
         break;
 
     default:
